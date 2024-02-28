@@ -101,9 +101,7 @@ private:
 		diff_sq.push_back(0);
 		for (unsigned int i=0; i<=values.size()-1; i++){
 			diff_sq.at(i)=pow((values[i]-mean),2);
-			std::cout<<diff_sq[i]<<" ";
 		}
-		std::cout<<std::endl;
 	}
 	void update_st_dev(){
 		double tmp = 0;
@@ -126,26 +124,11 @@ int main() {
 	statistics[3] = new Std{};
 
 	double val = 0;
-	// while (std::cin >> val) {
-		// for (size_t i = 0; i < statistics_count; ++i) {
-			// statistics[i]->update(val);
-		// }
-	// }
-
-	for (int i=0; i<=10; ++i){
-		for (size_t j = 0; j < statistics_count; ++j) {
-			statistics[j]->update(i);
+	while (std::cin >> val) {
+		for (size_t i = 0; i < statistics_count; ++i) {
+			statistics[i]->update(val);
 		}
 	}
-
-	// double arr[]={2,4,4,4,5,5,7,9};
-
-	// for (int i=0; i<8; ++i){
-		// for (size_t j = 0; j < statistics_count; ++j) {
-			// statistics[j]->update(arr[i]);
-		// }
-	// }
-
 
 	// Handle invalid input data
 	if (!std::cin.eof() && !std::cin.good()) {
