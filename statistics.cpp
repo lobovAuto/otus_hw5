@@ -1,5 +1,7 @@
 #include <iostream>
 #include <limits>
+#include <vector>
+#include <math.h>
 
 class IStatistics {
 public:
@@ -26,8 +28,6 @@ public:
 private:
 	double m_min;
 };
-
-
 
 class Max : public IStatistics {
 public:
@@ -74,21 +74,78 @@ private:
 	unsigned int count;
 };
 
+
+class Std : public IStatistics{
+public:
+	void update(double next) override {
+		update_mean(next);
+		values.push_back(next);
+		update_diff_sq();
+		update_st_dev();
+	};
+	double eval() const override {return standart_deviation;};
+	const char * name() const override { return "std";};
+private:
+	std::vector<double> values;
+	std::vector<double> diff_sq;
+	double mean;
+	double standart_deviation = 0;
+	void update_mean(double next){
+		if (values.size()==0){
+			mean = next;
+			return;
+		}
+		mean = ((mean*values.size())+next)/(values.size()+1);
+	}
+	void update_diff_sq(){
+		diff_sq.push_back(0);
+		for (unsigned int i=0; i<=values.size()-1; i++){
+			diff_sq.at(i)=pow((values[i]-mean),2);
+			std::cout<<diff_sq[i]<<" ";
+		}
+		std::cout<<std::endl;
+	}
+	void update_st_dev(){
+		double tmp = 0;
+		for (unsigned int i=0; i<=diff_sq.size(); i++){
+			tmp +=diff_sq[i];
+		}
+		tmp=tmp/diff_sq.size();
+		standart_deviation = sqrt(tmp);
+	}
+};
+
 int main() {
 
-	const size_t statistics_count = 3;
+	const size_t statistics_count = 4;
 	IStatistics *statistics[statistics_count];
 
 	statistics[0] = new Min{};
 	statistics[1] = new Max{};
 	statistics[2] = new Mean{};
+	statistics[3] = new Std{};
 
 	double val = 0;
-	while (std::cin >> val) {
-		for (size_t i = 0; i < statistics_count; ++i) {
-			statistics[i]->update(val);
+	// while (std::cin >> val) {
+		// for (size_t i = 0; i < statistics_count; ++i) {
+			// statistics[i]->update(val);
+		// }
+	// }
+
+	for (int i=0; i<=10; ++i){
+		for (size_t j = 0; j < statistics_count; ++j) {
+			statistics[j]->update(i);
 		}
 	}
+
+	// double arr[]={2,4,4,4,5,5,7,9};
+
+	// for (int i=0; i<8; ++i){
+		// for (size_t j = 0; j < statistics_count; ++j) {
+			// statistics[j]->update(arr[i]);
+		// }
+	// }
+
 
 	// Handle invalid input data
 	if (!std::cin.eof() && !std::cin.good()) {
